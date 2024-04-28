@@ -1,0 +1,17 @@
+*.mp4
+*.mp3
+*.wav
+*.png
+*.jpg
+*.pt
+*.json
+/output
+/input
+/models
+/src
+
+input/*
+output/*
+models/*
+src/*
+/.idea
