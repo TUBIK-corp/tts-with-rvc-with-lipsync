@@ -25,16 +25,17 @@ async def tts_comminicate(input_directory,
 text1 = "Всем привет, Десятый 'И' класс! Можно сказать, что я только что родился! Мои создатели делают для меня всё! Обращась к вам лишь потому, что хочу разделить с вами свою радость и попросить у вас поддержки! В скором времени я хочу выйти в свет и стать популярным! Надеюсь на ваши добрые слова! Спасибо!"
 text = "Всем привет, Десятый 'И' класс!"
 
-input_path, _ = (pool.submit(asyncio.run, tts_comminicate(input_directory="input\\", text=text, tts_add_rate=0, tts_add_volume=0, tts_add_pitch=0)).result())
-
 api_key = 'f5a97ebb-c150-48be-a35c-9010ba69e0ec'
 url = "https://api.synclabs.so/lipsync"
 credentials_path = "credentials.json"
 
-wav2lip = Wav2LipSync(api_key, url, credentials_path)
 image_path = 'pups.png'
 audio_path = input_path
 output_path = 'out3.mp4'
+
+wav2lip = Wav2LipSync(api_key, url, credentials_path)
+
+input_path, _ = (pool.submit(asyncio.run, tts_comminicate(input_directory="input\\", text=text, tts_add_rate=0, tts_add_volume=0, tts_add_pitch=0)).result())
 
 if os.path.exists("temp.mp4"):
     os.remove("temp.mp4")
@@ -46,24 +47,11 @@ path = rvc(text=text, pitch=6)
 
 thread.join()
 
-video_clip = VideoFileClip("temp.mp4")
+video_clip = VideoFileClip("temp.mp4").set_audio(audio_clip)
 audio_clip = AudioFileClip(path)
 
-video_clip = video_clip.set_audio(audio_clip)
-
-
-image_clip = ImageClip("denvot.png", duration=video_clip.duration)
-
-x_center = (1025 - 285) // 2
-y_center = (1025 - 285) // 2
-
-video_clip = video_clip.set_position((x_center, y_center))
-
-final_clip = CompositeVideoClip([image_clip, video_clip])
-
-
-final_clip.write_videofile(output_path, codec="libx264", audio_codec="aac", fps=24)
+video_clip.write_videofile(output_path, codec="libx264", audio_codec="aac", fps=24)
 video_clip.close()
-final_clip.close()
 audio_clip.close()
+
 print("Файл сохранён в:", output_path)
