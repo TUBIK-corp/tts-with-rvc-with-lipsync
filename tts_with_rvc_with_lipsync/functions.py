@@ -31,13 +31,13 @@ class Text2RVCLipSync:
 
     def text2lip(self, text, image_path, output_path=None, rvc_pitch=0, tts_rate=0, tts_volume=0, tts_pitch=0):
 
+        rvc_thread = threading.Thread(target=lambda: setattr(rvc_thread, 'result', self.rvc(text=text, pitch=rvc_pitch, tts_rate=tts_rate, tts_volume=tts_volume, tts_pitch=tts_pitch)))
+        rvc_thread.start()
+        
         input_path, _ = (self.pool.submit(asyncio.run, self.tts_comminicate(text=text, tts_add_rate=tts_rate, tts_add_volume=tts_volume, tts_add_pitch=tts_pitch)).result())
 
         lipsync_thread = threading.Thread(target=lambda: setattr(lipsync_thread, 'result', self.wav2lip(image_path=image_path, audio_path=input_path)))
-        rvc_thread = threading.Thread(target=lambda: setattr(rvc_thread, 'result', self.rvc(text=text, pitch=rvc_pitch, tts_rate=tts_rate, tts_volume=tts_volume, tts_pitch=tts_pitch)))
-
         lipsync_thread.start()
-        rvc_thread.start()
 
         lipsync_thread.join()
         rvc_thread.join()
