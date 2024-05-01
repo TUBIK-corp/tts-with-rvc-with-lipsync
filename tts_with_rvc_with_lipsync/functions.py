@@ -56,17 +56,3 @@ class Text2RVCLipSync:
         video_clip.close()
 
         return output_path
-
-# Пример использования
-lip_api_key = 'f5a97ebb-c150-48be-a35c-9010ba69e0ec'
-rvc_path = "venv\\src\\rvclib"
-model_path = "denvot.pth"
-tts_voice = "ru-RU-DmitryNeural"
-
-text2lip = Text2RVCLipSync(lip_api_key=lip_api_key, rvc_path=rvc_path, model_path=model_path, tts_voice=tts_voice)
-
-text = "Слыш, ты чё, ахерел?"
-image_path = 'pups.png'
-rvc_pitch = 6
-
-print("Файл сохранён в:", text2lip(text=text, image_path=image_path, rvc_pitch=6))
