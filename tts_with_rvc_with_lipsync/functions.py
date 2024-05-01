@@ -9,7 +9,9 @@ import tempfile
 
 class Text2RVCLipSync:
     def __init__(self, lip_api_key, rvc_path, model_path, lip_url="https://api.synclabs.so/lipsync", lip_model="wav2lip++", lip_crop=False, credentials_path="credentials.json", input_directory="input\\", tts_voice="ru-RU-DmitryNeural"):
-        self.rvc = TTS_RVC(rvc_path=rvc_path, input_directory=input_directory, model_path=model_path, voice=tts_voice)
+        self.tts_voice = tts_voice
+        self.input_directory = input_directory
+        self.rvc = TTS_RVC(rvc_path=rvc_path, input_directory=self.input_directory, model_path=model_path, voice=self.tts_voice)
         self.wav2lip = Wav2LipSync(api_key=lip_api_key, url=lip_url, model=lip_model, credentials_path=credentials_path, crop_video=lip_crop)
         self.pool = concurrent.futures.ThreadPoolExecutor()
 
