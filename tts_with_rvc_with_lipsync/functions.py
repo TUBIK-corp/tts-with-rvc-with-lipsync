@@ -8,11 +8,12 @@ import concurrent.futures
 import tempfile
 
 class Text2RVCLipSync:
-    def __init__(self, lip_api_key, rvc_path, model_path, lip_url="https://api.synclabs.so/lipsync", lip_model="wav2lip++", lip_crop=False, credentials_path="credentials.json", rvc_input_directory=None, tts_voice="ru-RU-DmitryNeural"):
+    def __init__(self, lip_api_key, rvc_path, model_path, lip_url="https://api.synclabs.so/lipsync", lip_model="wav2lip++", lip_crop=False, credentials_path="credentials.json", rvc_input_directory=None, rvc_output_directory=None, tts_voice="ru-RU-DmitryNeural"):
         self.tts_voice = tts_voice
         self.input_directory = rvc_input_directory
         if not self.input_directory: self.input_directory = tempfile.gettempdir()
-        self.rvc = TTS_RVC(rvc_path=rvc_path, input_directory=self.input_directory, model_path=model_path, voice=self.tts_voice)
+        self.output_directory = rvc_output_directory
+        self.rvc = TTS_RVC(rvc_path=rvc_path, input_directory=self.input_directory, output_directory=self.output_directory, model_path=model_path, voice=self.tts_voice)
         self.wav2lip = Wav2LipSync(api_key=lip_api_key, url=lip_url, model=lip_model, credentials_path=credentials_path, crop_video=lip_crop)
         self.pool = concurrent.futures.ThreadPoolExecutor()
 
@@ -33,7 +34,7 @@ class Text2RVCLipSync:
     def text2lip(self, text, image_path, output_path=None, rvc_pitch=0, tts_rate=0, tts_volume=0, tts_pitch=0):
         input_path, _ = (self.pool.submit(asyncio.run, self.tts_comminicate(text=text, tts_add_rate=tts_rate, tts_add_volume=tts_volume, tts_add_pitch=tts_pitch)).result())
 
-        rvc_thread = threading.Thread(target=lambda: setattr(rvc_thread, 'result', self.rvc.speech(input_path=input_path, pitch=rvc_pitch, output_directory=tempfile.gettempdir())))
+        rvc_thread = threading.Thread(target=lambda: setattr(rvc_thread, 'result', self.rvc.speech(input_path=input_path, pitch=rvc_pitch, output_directory=self.output_directory)))
         lipsync_thread = threading.Thread(target=lambda: setattr(lipsync_thread, 'result', self.wav2lip(image_path=image_path, audio_path=input_path)))
         rvc_thread.start()
         lipsync_thread.start()

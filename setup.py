@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='tts_with_rvc_with_lipsync',
-    version='0.0.3',
+    version='0.0.4',
     description='Text to RVC LipSync',
     author='Amadeus (Wasys)',
     packages=find_packages(), 
