@@ -13,6 +13,7 @@ class Text2RVCLipSync:
         self.input_directory = rvc_input_directory
         if not self.input_directory: self.input_directory = tempfile.gettempdir()
         self.output_directory = rvc_output_directory
+        if not self.output_directory: self.output_directory = tempfile.gettempdir()
         self.rvc = TTS_RVC(rvc_path=rvc_path, input_directory=self.input_directory, output_directory=self.output_directory, model_path=model_path, voice=self.tts_voice)
         self.wav2lip = Wav2LipSync(api_key=lip_api_key, url=lip_url, model=lip_model, credentials_path=credentials_path, crop_video=lip_crop)
         self.pool = concurrent.futures.ThreadPoolExecutor()

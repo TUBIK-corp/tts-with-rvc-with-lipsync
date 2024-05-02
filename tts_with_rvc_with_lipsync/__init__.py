@@ -1,1 +1,1 @@
-from .functions import Text2RVCLipSync
+from .functions import *
