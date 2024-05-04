@@ -29,14 +29,14 @@ class Text2RVCLipSync:
         await communicate.save(input_path + ".wav")
         return (input_path + ".wav"), file_name
 
-    def __call__(self, text, image_path, output_path=None, rvc_pitch=0, tts_rate=0, tts_volume=0, tts_pitch=0):
-        return self.text2lip(text, image_path, output_path, rvc_pitch, tts_rate, tts_volume, tts_pitch)
+    def __call__(self, text, file_path, output_path=None, rvc_pitch=0, tts_rate=0, tts_volume=0, tts_pitch=0):
+        return self.text2lip(text, file_path, output_path, rvc_pitch, tts_rate, tts_volume, tts_pitch)
 
-    def text2lip(self, text, image_path, output_path=None, rvc_pitch=0, tts_rate=0, tts_volume=0, tts_pitch=0):
+    def text2lip(self, text, file_path, output_path=None, rvc_pitch=0, tts_rate=0, tts_volume=0, tts_pitch=0):
         input_path, _ = (self.pool.submit(asyncio.run, self.tts_comminicate(text=text, tts_add_rate=tts_rate, tts_add_volume=tts_volume, tts_add_pitch=tts_pitch)).result())
 
         rvc_thread = threading.Thread(target=lambda: setattr(rvc_thread, 'result', self.rvc.speech(input_path=input_path, pitch=rvc_pitch, output_directory=self.output_directory)))
-        lipsync_thread = threading.Thread(target=lambda: setattr(lipsync_thread, 'result', self.wav2lip(image_path=image_path, audio_path=input_path)))
+        lipsync_thread = threading.Thread(target=lambda: setattr(lipsync_thread, 'result', self.wav2lip(file_path=file_path, audio_path=input_path)))
         rvc_thread.start()
         lipsync_thread.start()
 
